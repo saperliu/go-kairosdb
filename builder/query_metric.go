@@ -81,7 +81,7 @@ func (qm *qMetric) AddAggregator(aggr Aggregator) QueryMetric {
 	return qm
 }
 
-// TODO: This is just a plcaeholder. Need to define the Grouper type.
+// TODO: This is just a placeholder. Need to define the Grouper type.
 func (qm *qMetric) AddGrouper() QueryMetric {
 	return qm
 }

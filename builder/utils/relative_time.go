@@ -45,16 +45,3 @@ func (rt *RelativeTime) RelativeTimeTo(t time.Time) time.Time {
 
 	return newTime
 }
-
-/*
-func (rt *RelativeTime) MarshalJSON() ([]byte, error) {
-	data := struct {
-		Value int    `json:"value"`
-		Unit  string `json:"unit"`
-	}{
-		Value: rt.value,
-		Unit:  string(rt.unit),
-	}
-	return json.Marshal(data)
-}
-*/

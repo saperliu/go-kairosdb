@@ -9,7 +9,6 @@ type sampling struct {
 
 type samplingAggregator struct {
 	*basicAggregator
-	//Name           string
 	AlignStartTime bool     `json:"align_start_time,omitempty"`
 	AlignSampling  bool     `json:"align_sampling,omitempty"`
 	StartTime      int64    `json:"start_time,omitempty"`
@@ -19,7 +18,6 @@ type samplingAggregator struct {
 func NewSamplingAggregator(name string, value int, unit utils.TimeUnit) *samplingAggregator {
 	return &samplingAggregator{
 		basicAggregator: NewBasicAggregator(name),
-		//name:            name,
 		Sample: sampling{
 			Value: value,
 			Unit:  unit,
@@ -35,10 +33,10 @@ func (sa *samplingAggregator) GetUnit() utils.TimeUnit {
 	return sa.Sample.Unit
 }
 
-// Alignment based on the sampling size. For example if your sample size is either milliseconds,
-// seconds, minutes or hours then the start of the range will always be at the top
-// of the hour.  The effect of setting this to true is that your data will
-// take the same shape when graphed as you refresh the data.
+// Alignment based on the sampling size. For example if your sample size is either
+// milliseconds, seconds, minutes or hours then the start of the range will always
+// be at the top of the hour.  The effect of setting this to true is that your data
+// will take the same shape when graphed as you refresh the data.
 //
 // Only one alignment type can be used.
 func (sa *samplingAggregator) WithSamplingAlignment() *samplingAggregator {
@@ -67,9 +65,3 @@ func (sa *samplingAggregator) IsAlignStartTime() bool {
 func (sa *samplingAggregator) GetAlignStartTime() int64 {
 	return sa.StartTime
 }
-
-/*
-func (sa *samplingAggregator) GetName() string {
-	return "tmp"
-}
-*/

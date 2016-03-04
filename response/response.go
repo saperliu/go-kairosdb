@@ -13,10 +13,6 @@ func (r *Response) GetStatusCode() int {
 	return r.statusCode
 }
 
-func (r *Response) AddErrors(errs []string) {
-	r.Errors = errs
-}
-
 func (r *Response) GetErrors() []string {
 	return r.Errors
 }

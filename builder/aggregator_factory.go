@@ -43,8 +43,9 @@ func CreateAverageAggregator(value int, unit utils.TimeUnit) Aggregator {
 	return aggregator.NewSamplingAggregator("avg", value, unit)
 }
 
-// Creates an aggregator that returns the standard deviation values for each time period as specified.
-// For example, "5 minutes" would returns the standard deviation value for each 5 minute period.
+// Creates an aggregator that returns the standard deviation values for each time period
+// as specified. For example, "5 minutes" would returns the standard deviation value for
+// each 5 minute period.
 //
 // @param value value for time period.
 // @param unit unit of time
@@ -53,8 +54,9 @@ func CreateStandardDeviationAggregator(value int, unit utils.TimeUnit) Aggregato
 	return aggregator.NewSamplingAggregator("dev", value, unit)
 }
 
-// Creates an aggregator that returns the sum of all values over each time period as specified.
-// For example, "5 minutes" would returns the sum value for each 5 minute period.
+// Creates an aggregator that returns the sum of all values over each time period as
+// specified. For example, "5 minutes" would returns the sum value for each 5 minute
+// period.
 //
 // @param value value for time period.
 // @param unit unit of time
@@ -63,8 +65,9 @@ func CreateSumAggregator(value int, unit utils.TimeUnit) Aggregator {
 	return aggregator.NewSamplingAggregator("sum", value, unit)
 }
 
-// Creates an aggregator that returns the count of all values for each time period as specified.
-// For example, "5 minutes" would returns the count of data points for each 5 minute period.
+// Creates an aggregator that returns the count of all values for each time period as
+// specified. For example, "5 minutes" would returns the count of data points for each
+// 5 minute period.
 //
 // @param value value for time period.
 // @param unit unit of time
@@ -91,7 +94,8 @@ func CreateFirstAggregator(value int, unit utils.TimeUnit) Aggregator {
 	return aggregator.NewSamplingAggregator("first", value, unit)
 }
 
-// Creates an aggregator that marks gaps in data according to sampling rate with a null data point.
+// Creates an aggregator that marks gaps in data according to sampling rate with a null
+// data point.
 //
 // @param value value for time period.
 // @param unit unit of time
@@ -100,7 +104,8 @@ func CreateDataGapsMarkingAggregator(value int, unit utils.TimeUnit) Aggregator 
 	return aggregator.NewSamplingAggregator("gaps", value, unit)
 }
 
-// Creates an aggregator that returns a best fit line through the datapoints using the least squares algorithm..
+// Creates an aggregator that returns a best fit line through the datapoints using the
+// least squares algorithm..
 //
 // @param value value for time period.
 // @param unit unit of time
@@ -109,8 +114,9 @@ func CreateLeastSquaresAggregator(value int, unit utils.TimeUnit) Aggregator {
 	return aggregator.NewSamplingAggregator("least_squares", value, unit)
 }
 
-// Creates an aggregator that returns the percentile value for a given percentage of all values over each time period as specified.
-// For example, "0.5" and "5 minutes" would returns the median of data points for each 5 minute period.
+// Creates an aggregator that returns the percentile value for a given percentage of all
+// values over each time period as specified. For example, "0.5" and "5 minutes" would
+// returns the median of data points for each 5 minute period.
 //
 // @param value percentage
 // @param unit unit of time
@@ -174,7 +180,8 @@ func CreateSaveAsAggregator(newMetricName string) Aggregator {
 	return aggregator.NewCustomAggregator(m)
 }
 
-// Creates an aggregator that trim of the first, last, or both data points returned by the query.
+// Creates an aggregator that trim of the first, last, or both data points returned by
+// the query.
 //
 // @param trim what to trim
 // @return trim aggregator
