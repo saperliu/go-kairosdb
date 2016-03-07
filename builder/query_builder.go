@@ -1,3 +1,17 @@
+// Copyright 2016 Ajit Yagaty
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package builder
 
 import (
@@ -70,46 +84,26 @@ func (qb *qBuilder) timeInMs(t time.Time) int64 {
 }
 
 func (qb *qBuilder) SetAbsoluteStart(date time.Time) QueryBuilder {
-	if qb.StartRel != nil {
-		return qb
-	}
-
 	qb.StartAbs = qb.timeInMs(date)
 	return qb
 }
 
 func (qb *qBuilder) SetRelativeStart(duration int, unit utils.TimeUnit) QueryBuilder {
-	if qb.StartAbs != 0 || duration <= 0 {
-		return qb
-	}
-
 	qb.StartRel = utils.NewRelativeTime(duration, unit)
 	return qb
 }
 
 func (qb *qBuilder) SetAbsoluteEnd(date time.Time) QueryBuilder {
-	if qb.EndRel != nil {
-		return qb
-	}
-
 	qb.EndAbs = qb.timeInMs(date)
 	return qb
 }
 
 func (qb *qBuilder) SetRelativeEnd(duration int, unit utils.TimeUnit) QueryBuilder {
-	if qb.EndAbs != 0 || duration <= 0 {
-		return qb
-	}
-
 	qb.EndRel = utils.NewRelativeTime(duration, unit)
 	return qb
 }
 
 func (qb *qBuilder) SetCacheTime(cacheTimeMs int) QueryBuilder {
-	if cacheTimeMs <= 0 {
-		return qb
-	}
-
 	qb.CacheTimeMs = cacheTimeMs
 	return qb
 }
@@ -145,5 +139,32 @@ func (qb *qBuilder) Metrics() []QueryMetric {
 }
 
 func (qb *qBuilder) Build() ([]byte, error) {
+	if qb.StartAbs != 0 && qb.StartRel != nil {
+		return nil, ErrorAbsRelativeStartSet
+	}
+
+	if qb.StartRel != nil && qb.StartRel.Value() <= 0 {
+		return nil, ErrorRelativeStartTimeInvalid
+	}
+
+	if qb.EndAbs != 0 && qb.EndRel != nil {
+		return nil, ErrorAbsRelativeEndSet
+	}
+
+	if qb.EndRel != nil && qb.EndRel.Value() <= 0 {
+		return nil, ErrorRelativeEndTimeInvalid
+	}
+
+	if qb.StartAbs == 0 && qb.StartRel == nil {
+		return nil, ErrorStartTimeNotSpecified
+	}
+
+	for _, qm := range qb.MetricsArr {
+		err := qm.validate()
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	return json.Marshal(qb)
 }

@@ -1,3 +1,17 @@
+// Copyright 2016 Ajit Yagaty
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package builder
 
 // Query request for a metric. If a metric is queried by name only then all
@@ -45,6 +59,9 @@ type QueryMetric interface {
 
 	// Orders the data points. The server default is ascending.
 	SetOrder(order OrderType) QueryMetric
+
+	// Validates the contents of the QueryMetric instance.
+	validate() error
 }
 
 type qMetric struct {
@@ -94,4 +111,24 @@ func (qm *qMetric) SetLimit(limit int) QueryMetric {
 func (qm *qMetric) SetOrder(order OrderType) QueryMetric {
 	qm.Order = order
 	return qm
+}
+
+func (qm *qMetric) validate() error {
+	if qm.Name == "" {
+		return ErrorQMetricNameInvalid
+	}
+
+	for k, v := range qm.Tags {
+		if k == "" {
+			return ErrorQMetricTagNameInvalid
+		} else if v == "" {
+			return ErrorQMetricTagValueInvalid
+		}
+	}
+
+	if qm.Limit < 0 {
+		return ErrorQMetricLimitInvalid
+	}
+
+	return nil
 }

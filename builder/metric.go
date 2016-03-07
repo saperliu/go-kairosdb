@@ -1,3 +1,17 @@
+// Copyright 2016 Ajit Yagaty
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package builder
 
 import "encoding/json"
@@ -38,17 +52,20 @@ type Metric interface {
 	// Returns an array of all the datapoints of this metric.
 	GetDataPoints() []DataPoint
 
+	// Validates the contents of the metric struct.
+	validate() error
+
 	// Encodes the Metric instance as a JSON array.
 	Build() ([]byte, error)
 }
 
 // Type that implements the Metric interface.
 type metricType struct {
-	Name       string            `json:"name"`           // Name of the metric.
-	Type       string            `json:"type,omitempty"` // Type of the metric being stored.
-	DataPoints []DataPoint       `json:"datapoints"`     // List of DataPoints.
-	Tags       map[string]string `json:"tags"`           // Map of tag names and the values associated.
-	TTL        int64             `json:"ttl"`            // TTL associated with the metric.
+	Name       string            `json:"name,omitempty"`       // Name of the metric.
+	Type       string            `json:"type,omitempty"`       // Type of the metric being stored.
+	Tags       map[string]string `json:"tags,omitempty"`       // Map of tag names and the values associated.
+	DataPoints []DataPoint       `json:"datapoints,omitempty"` // List of DataPoints.
+	TTL        int64             `json:"ttl,omitempty"`        // TTL associated with the metric.
 }
 
 func NewMetric(name string) Metric {
@@ -98,7 +115,36 @@ func (m *metricType) GetDataPoints() []DataPoint {
 	return m.DataPoints
 }
 
+func (m *metricType) validate() error {
+	// Check if the metric name set is valid.
+	if m.Name == "" {
+		return ErrorMetricNameInvalid
+	}
+
+	// Check if the tag names & vaues are valid.
+	for k, v := range m.Tags {
+		if k == "" {
+			return ErrorTagNameInvalid
+		} else if v == "" {
+			return ErrorTagValueInvalid
+		}
+	}
+
+	// Check if TTL is greater than 0.
+	if m.TTL < 0 {
+		return ErrorTTLInvalid
+	}
+
+	return nil
+}
+
 func (m *metricType) Build() ([]byte, error) {
+	err := m.validate()
+	if err != nil {
+		return nil, err
+	}
+
+	// Encode the struct into JSON object.
 	b, err := json.Marshal(m)
 	return b, err
 }
