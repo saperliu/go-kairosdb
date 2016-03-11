@@ -27,9 +27,6 @@ var (
 	ErrorDataPointInt64   = errors.New("Not an int64 data value")
 	ErrorDataPointFloat64 = errors.New("Not a float64 data value")
 
-	// Metric Builder Errors.
-	ErrorQBMetricHasNoTags = errors.New("Metric doesn't have tags")
-
 	// Query Metric Errors.
 	ErrorQMetricNameInvalid     = errors.New("Query Metric name empty")
 	ErrorQMetricTagNameInvalid  = errors.New("Query Metric Tag name empty")

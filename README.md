@@ -11,7 +11,7 @@ More info about the original client can be found [here](https://github.com/kairo
 Like the Java based client, *go-kairosdb* also employs a builder pattern to construct the JSON objects
 that are sent to KairosDB using an http client.
 
-NOTE: This is still work in progress.
+NOTE: THIS IS STILL WORK IN PROGRESS.
 
 ## Getting go-kairosdb
 *go-kairosdb* is written in golang and hence it's assumed that the user has setup the golang programming environment

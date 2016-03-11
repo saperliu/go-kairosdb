@@ -50,16 +50,6 @@ func TestMetricBuilder(t *testing.T) {
 }
 
 // Failure test.
-func TestMetricBuilderContainsTag(t *testing.T) {
-	b := NewMetricBuilder()
-	b.AddMetric("metric1")
-
-	s, err := b.Build()
-	assert.Equal(t, ErrorQBMetricHasNoTags, err, "Metric has not tags error expected")
-	assert.Nil(t, s, "Build output must be nil")
-}
-
-// Failure test.
 func TestMetricBuilderEmptyMetricName(t *testing.T) {
 	b := NewMetricBuilder()
 	b.AddMetric("")

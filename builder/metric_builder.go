@@ -53,12 +53,6 @@ func (mb *mBuilder) Build() ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-
-		// Also make sure that every metric has atleast one tag.
-		t := m.GetTags()
-		if len(t) == 0 {
-			return nil, ErrorQBMetricHasNoTags
-		}
 	}
 
 	return json.Marshal(mb.Metrics)
