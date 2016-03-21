@@ -17,17 +17,17 @@ package aggregator
 import "encoding/json"
 
 type customAggregator struct {
-	keyVal map[string]interface{}
+	KeyVal map[string]interface{}
 }
 
 func NewCustomAggregator(kv map[string]interface{}) *customAggregator {
 	return &customAggregator{
-		keyVal: kv,
+		KeyVal: kv,
 	}
 }
 
-func (ca *customAggregator) GetName() string {
-	name, ok := ca.keyVal["name"].(string)
+func (ca *customAggregator) Name() string {
+	name, ok := ca.KeyVal["name"].(string)
 	if !ok {
 		return ""
 	} else {
@@ -35,6 +35,10 @@ func (ca *customAggregator) GetName() string {
 	}
 }
 
+func (ca *customAggregator) Validate() error {
+	return nil
+}
+
 func (ca *customAggregator) MarshalJSON() ([]byte, error) {
-	return json.Marshal(ca.keyVal)
+	return json.Marshal(ca.KeyVal)
 }

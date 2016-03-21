@@ -23,10 +23,10 @@ type sampling struct {
 
 type samplingAggregator struct {
 	*basicAggregator
-	AlignStartTime bool     `json:"align_start_time,omitempty"`
-	AlignSampling  bool     `json:"align_sampling,omitempty"`
-	StartTime      int64    `json:"start_time,omitempty"`
-	Sample         sampling `json:"sampling,omitempty"`
+	AlignStartTimeBool bool     `json:"align_start_time,omitempty"`
+	AlignSamplingBool  bool     `json:"align_sampling,omitempty"`
+	StartTimeValue     int64    `json:"start_time,omitempty"`
+	Sample             sampling `json:"sampling,omitempty"`
 }
 
 func NewSamplingAggregator(name string, value int, unit utils.TimeUnit) *samplingAggregator {
@@ -39,22 +39,14 @@ func NewSamplingAggregator(name string, value int, unit utils.TimeUnit) *samplin
 	}
 }
 
-func (sa *samplingAggregator) GetValue() int {
-	return sa.Sample.Value
-}
-
-func (sa *samplingAggregator) GetUnit() utils.TimeUnit {
-	return sa.Sample.Unit
-}
-
 // Alignment based on the sampling size. For example if your sample size is either
 // milliseconds, seconds, minutes or hours then the start of the range will always
 // be at the top of the hour.  The effect of setting this to true is that your data
 // will take the same shape when graphed as you refresh the data.
 //
 // Only one alignment type can be used.
-func (sa *samplingAggregator) WithSamplingAlignment() *samplingAggregator {
-	sa.AlignSampling = true
+func (sa *samplingAggregator) SetSamplingAlignment() *samplingAggregator {
+	sa.AlignSamplingBool = true
 	return sa
 }
 
@@ -62,20 +54,54 @@ func (sa *samplingAggregator) WithSamplingAlignment() *samplingAggregator {
 // data point within that range.
 //
 // Only one alignment type can be used.
-func (sa *samplingAggregator) WithStartTimeAlignment(startTime int64) *samplingAggregator {
-	sa.AlignStartTime = true
-	sa.StartTime = startTime
+func (sa *samplingAggregator) SetStartTimeAlignmentOnly() *samplingAggregator {
+	sa.AlignStartTimeBool = true
 	return sa
 }
 
-func (sa *samplingAggregator) IsAlignSampling() bool {
-	return sa.AlignSampling
+// Alignment that starts based on the specified time. For example, if startTime
+// is set to noon today,then alignment starts at noon today.
+//
+// Only one alignment type can be used.
+func (sa *samplingAggregator) SetStartTimeAlignment(startTime int64) *samplingAggregator {
+	sa.AlignStartTimeBool = true
+	sa.StartTimeValue = startTime
+	return sa
 }
 
-func (sa *samplingAggregator) IsAlignStartTime() bool {
-	return sa.AlignStartTime
+func (sa *samplingAggregator) AlignSampling() bool {
+	return sa.AlignSamplingBool
 }
 
-func (sa *samplingAggregator) GetAlignStartTime() int64 {
-	return sa.StartTime
+func (sa *samplingAggregator) AlignStartTime() bool {
+	return sa.AlignStartTimeBool
+}
+
+func (sa *samplingAggregator) StartTime() int64 {
+	return sa.StartTimeValue
+}
+
+func (sa *samplingAggregator) Value() int {
+	return sa.Sample.Value
+}
+
+func (sa *samplingAggregator) Unit() utils.TimeUnit {
+	return sa.Sample.Unit
+}
+
+func (sa *samplingAggregator) Validate() error {
+	err := sa.basicAggregator.Validate()
+	if err != nil {
+		return err
+	}
+
+	if sa.Sample.Value <= 0 {
+		return ErrorSamplingAggrValueInvalid
+	}
+
+	if sa.StartTimeValue < 0 {
+		return ErrorSamplingAggrStartTimeInvalid
+	}
+
+	return nil
 }

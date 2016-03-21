@@ -14,29 +14,13 @@
 
 package aggregator
 
-import "github.com/ajityagaty/go-kairosdb/builder/utils"
+import "errors"
 
-type rateAggregator struct {
-	*basicAggregator
-	UnitVal utils.TimeUnit `json:"unit,omitempty"`
-}
+var (
+	ErrorAggrNameInvalid = errors.New("Aggregator name empty")
 
-func NewRateAggregator(unit utils.TimeUnit) *rateAggregator {
-	return &rateAggregator{
-		basicAggregator: NewBasicAggregator("rate"),
-		UnitVal:         unit,
-	}
-}
+	ErrorPercentileInvalid = errors.New("Percentile value must > 0 and <= 1")
 
-func (ra *rateAggregator) Unit() utils.TimeUnit {
-	return ra.UnitVal
-}
-
-func (ra *rateAggregator) Validate() error {
-	err := ra.basicAggregator.Validate()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
+	ErrorSamplingAggrValueInvalid     = errors.New("Sampling Aggregator value must be > 0")
+	ErrorSamplingAggrStartTimeInvalid = errors.New("Sampling Aggregator start time must be > 0")
+)

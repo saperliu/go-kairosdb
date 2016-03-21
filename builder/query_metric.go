@@ -61,7 +61,7 @@ type QueryMetric interface {
 	SetOrder(order OrderType) QueryMetric
 
 	// Validates the contents of the QueryMetric instance.
-	validate() error
+	Validate() error
 }
 
 type qMetric struct {
@@ -113,7 +113,7 @@ func (qm *qMetric) SetOrder(order OrderType) QueryMetric {
 	return qm
 }
 
-func (qm *qMetric) validate() error {
+func (qm *qMetric) Validate() error {
 	if qm.Name == "" {
 		return ErrorQMetricNameInvalid
 	}
@@ -128,6 +128,13 @@ func (qm *qMetric) validate() error {
 
 	if qm.Limit < 0 {
 		return ErrorQMetricLimitInvalid
+	}
+
+	for _, aggr := range qm.Aggregators {
+		err := aggr.Validate()
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

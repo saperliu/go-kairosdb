@@ -14,29 +14,16 @@
 
 package aggregator
 
-import "github.com/ajityagaty/go-kairosdb/builder/utils"
+import (
+	"testing"
 
-type rateAggregator struct {
-	*basicAggregator
-	UnitVal utils.TimeUnit `json:"unit,omitempty"`
-}
+	"github.com/ajityagaty/go-kairosdb/builder/utils"
+	"github.com/stretchr/testify/assert"
+)
 
-func NewRateAggregator(unit utils.TimeUnit) *rateAggregator {
-	return &rateAggregator{
-		basicAggregator: NewBasicAggregator("rate"),
-		UnitVal:         unit,
-	}
-}
-
-func (ra *rateAggregator) Unit() utils.TimeUnit {
-	return ra.UnitVal
-}
-
-func (ra *rateAggregator) Validate() error {
-	err := ra.basicAggregator.Validate()
-	if err != nil {
-		return err
-	}
-
-	return nil
+// Success test.
+func TestRateAggregator(t *testing.T) {
+	ra := NewRateAggregator(utils.MINUTES)
+	assert.Equal(t, "rate", ra.Name(), "Rate aggregator name field must be set to 'rate'")
+	assert.EqualValues(t, utils.MINUTES, ra.Unit(), "Rate aggregator unit must be set minutes")
 }

@@ -18,20 +18,28 @@ import "github.com/ajityagaty/go-kairosdb/builder/utils"
 
 type percentileAggregator struct {
 	*samplingAggregator
-	Percentile float64
+	PercentileValue float64
 }
 
 func NewPercentileAggregator(percentile float64, value int, unit utils.TimeUnit) *percentileAggregator {
 	return &percentileAggregator{
 		samplingAggregator: NewSamplingAggregator("percentile", value, unit),
-		Percentile:         percentile,
+		PercentileValue:    percentile,
 	}
 }
 
-func (pa *percentileAggregator) GetName() string {
-	return pa.GetName()
+func (pa *percentileAggregator) Percentile() float64 {
+	return pa.PercentileValue
 }
 
-func (pa *percentileAggregator) GetPercentile() float64 {
-	return pa.Percentile
+func (pa *percentileAggregator) Validate() error {
+	if err := pa.samplingAggregator.Validate(); err != nil {
+		return err
+	}
+
+	if pa.PercentileValue <= 0.0 || pa.PercentileValue > 1.0 {
+		return ErrorPercentileInvalid
+	}
+
+	return nil
 }

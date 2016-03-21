@@ -160,7 +160,7 @@ func (qb *qBuilder) Build() ([]byte, error) {
 	}
 
 	for _, qm := range qb.MetricsArr {
-		err := qm.validate()
+		err := qm.Validate()
 		if err != nil {
 			return nil, err
 		}

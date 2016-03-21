@@ -25,7 +25,7 @@ import (
 func TestQMetric(t *testing.T) {
 	testData := `{"tags":{"tag1":"val1"},"name":"qm1","limit":100,"order":"desc"}`
 	qm := NewQueryMetric("qm1").AddTag("tag1", "val1").SetLimit(100).SetOrder(DESCENDING)
-	err := qm.validate()
+	err := qm.Validate()
 
 	assert.Nil(t, err, "No error expected")
 	j, _ := json.Marshal(qm)
@@ -34,21 +34,21 @@ func TestQMetric(t *testing.T) {
 
 // Failure test.
 func TestQMetricNameEmpty(t *testing.T) {
-	err := NewQueryMetric("").validate()
+	err := NewQueryMetric("").Validate()
 
 	assert.Equal(t, ErrorQMetricNameInvalid, err, "Query Metric name cannot be empty")
 }
 
 // Failure test.
 func TestQMetricTagNameEmpty(t *testing.T) {
-	err := NewQueryMetric("qm1").AddTag("", "val").validate()
+	err := NewQueryMetric("qm1").AddTag("", "val").Validate()
 
 	assert.Equal(t, ErrorQMetricTagNameInvalid, err, "Query Metric tag name cannot be empty")
 }
 
 // Failure test.
 func TestQMetricTagValueEmpty(t *testing.T) {
-	err := NewQueryMetric("qm1").AddTag("tag", "").validate()
+	err := NewQueryMetric("qm1").AddTag("tag", "").Validate()
 
 	assert.Equal(t, ErrorQMetricTagValueInvalid, err, "Query Metric tag value cannot be empty")
 }
@@ -59,7 +59,7 @@ func TestQMetricMapTagNameEmpty(t *testing.T) {
 		"tag1": "val1",
 		"":     "val2",
 	}
-	err := NewQueryMetric("qm1").AddTags(tm).validate()
+	err := NewQueryMetric("qm1").AddTags(tm).Validate()
 
 	assert.Equal(t, ErrorQMetricTagNameInvalid, err, "Query Metric tag name cannot be empty")
 }
@@ -70,14 +70,14 @@ func TestQMetricMapTagValueEmpty(t *testing.T) {
 		"tag1": "val1",
 		"tag2": "",
 	}
-	err := NewQueryMetric("qm1").AddTags(tm).validate()
+	err := NewQueryMetric("qm1").AddTags(tm).Validate()
 
 	assert.Equal(t, ErrorQMetricTagValueInvalid, err, "Query Metric tag value cannot be empty")
 }
 
 // Failure test.
 func TestQMetricLimitNegative(t *testing.T) {
-	err := NewQueryMetric("qm1").AddTag("tag", "val").SetLimit(-1).validate()
+	err := NewQueryMetric("qm1").AddTag("tag", "val").SetLimit(-1).Validate()
 
 	assert.Equal(t, ErrorQMetricLimitInvalid, err, "Query Metric limit cannot be negative")
 }

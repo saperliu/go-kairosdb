@@ -15,6 +15,9 @@
 package builder
 
 type Aggregator interface {
-	// Gets the name of the aggregation being used.
-	GetName() string
+	// Returns the name of the aggregation being used.
+	Name() string
+
+	// Validates that the contents of the aggregator.
+	Validate() error
 }

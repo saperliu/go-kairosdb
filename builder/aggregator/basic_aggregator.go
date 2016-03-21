@@ -15,15 +15,23 @@
 package aggregator
 
 type basicAggregator struct {
-	Name string `json:"name,omitempty"`
+	AggrName string `json:"name,omitempty"`
 }
 
 func NewBasicAggregator(name string) *basicAggregator {
 	return &basicAggregator{
-		Name: name,
+		AggrName: name,
 	}
 }
 
-func (ba *basicAggregator) GetName() string {
-	return ba.Name
+func (ba *basicAggregator) Name() string {
+	return ba.AggrName
+}
+
+func (ba *basicAggregator) Validate() error {
+	if ba.AggrName == "" {
+		return ErrorAggrNameInvalid
+	}
+
+	return nil
 }
