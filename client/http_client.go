@@ -89,7 +89,7 @@ func (hc *httpClient) DeleteMetric(name string) (*response.Response, error) {
 	return hc.delete(hc.serverAddress + delmetric_ep + name)
 }
 
-// TODO: Deletes data in KairosDB using the query built by the builder.
+// Deletes data in KairosDB using the query built by the builder.
 func (hc *httpClient) Delete(qb builder.QueryBuilder) (*response.Response, error) {
 	data, err := qb.Build()
 	if err != nil {
