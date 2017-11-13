@@ -27,14 +27,14 @@ import (
 var (
 	api_version      = "/api/v1"
 	datapoints_ep    = api_version + "/datapoints"
+	deldatapoints_ep = api_version + "/datapoints/delete"
 	query_ep         = api_version + "/datapoints/query"
-	version_ep       = api_version + "/version"
 	health_ep        = api_version + "/health/check"
+	delmetric_ep     = api_version + "/metric/"
 	metricnames_ep   = api_version + "/metricnames"
 	tagnames_ep      = api_version + "/tagnames"
 	tagvalues_ep     = api_version + "/tagvalues"
-	delmetric_ep     = api_version + "/metric/"
-	deldatapoints_ep = api_version + "/datapoints/delete"
+	version_ep       = api_version + "/version"
 )
 
 // This is the type that implements the Client interface.
