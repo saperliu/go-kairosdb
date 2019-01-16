@@ -18,7 +18,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/ajityagaty/go-kairosdb/builder/utils"
+	"github.com/saperliu/go-kairosdb/builder/utils"
 )
 
 type QueryBuilder interface {

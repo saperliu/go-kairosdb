@@ -20,8 +20,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/ajityagaty/go-kairosdb/builder"
-	"github.com/ajityagaty/go-kairosdb/response"
+	"github.com/saperliu/go-kairosdb/builder"
+	"github.com/saperliu/go-kairosdb/response"
 )
 
 var (
