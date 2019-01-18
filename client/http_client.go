@@ -17,6 +17,7 @@ package client
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -105,7 +106,7 @@ func (hc *httpClient) HealthCheck() (*response.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	defer resp.Body.Close()
 	r := &response.Response{}
 	r.SetStatusCode(resp.StatusCode)
 	return r, nil
@@ -123,17 +124,19 @@ func (hc *httpClient) sendRequest(url, method string) (*http.Response, error) {
 }
 
 func (hc *httpClient) httpRespToResponse(httpResp *http.Response) (*response.Response, error) {
+	defer httpResp.Body.Close()
 	resp := &response.Response{}
 	resp.SetStatusCode(httpResp.StatusCode)
 
 	if httpResp.StatusCode != http.StatusNoContent {
 		// If the request has failed, then read the response body.
-		defer httpResp.Body.Close()
+		//defer httpResp.Body.Close()
 		contents, err := ioutil.ReadAll(httpResp.Body)
 		if err != nil {
 			return nil, err
 		} else {
 			// Unmarshal the contents into Response object.
+			fmt.Printf(" kairosdb  response : %v " ,contents)
 			err = json.Unmarshal(contents, resp)
 			if err != nil {
 				return nil, err
@@ -190,7 +193,7 @@ func (hc *httpClient) postData(url string, data []byte) (*response.Response, err
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Printf("-----postData  finish ------- %v    %v    %v  ",url , err, resp)
 	return hc.httpRespToResponse(resp)
 }
 
