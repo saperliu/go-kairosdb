@@ -81,3 +81,7 @@ func (dp *DataPoint) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+
+func (dp *DataPoint) ByteValue() ([]byte, error) {
+	return json.Marshal(dp.value)
+}
