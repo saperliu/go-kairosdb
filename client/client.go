@@ -15,8 +15,8 @@
 package client
 
 import (
-	"go-kairosdb/builder"
-	"go-kairosdb/response"
+	"github.com/saperliu/go-kairosdb/builder"
+	"github.com/saperliu/go-kairosdb/response"
 )
 
 type Client interface {

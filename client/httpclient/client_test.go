@@ -1,7 +1,7 @@
 package httpclient
 
 import (
-	"go-kairosdb/client/xtime"
+	"github.com/saperliu/go-kairosdb/client/xtime"
 	"testing"
 	"time"
 	"golang.org/x/net/context"

@@ -2,7 +2,7 @@ package backoff
 
 import (
 	"fmt"
-	"go-kairosdb/client/xtime"
+	"github.com/saperliu/go-kairosdb/client/xtime"
 	"testing"
 	"time"
 )

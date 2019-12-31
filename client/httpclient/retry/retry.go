@@ -1,7 +1,7 @@
 package retry
 
 import (
-	"go-kairosdb/client/httpclient/backoff"
+	"github.com/saperliu/go-kairosdb/client/httpclient/backoff"
 	"time"
 )
 

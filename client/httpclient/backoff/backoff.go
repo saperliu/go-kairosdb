@@ -1,7 +1,7 @@
 package backoff
 
 import (
-	"go-kairosdb/client/xtime"
+	"github.com/saperliu/go-kairosdb/client/xtime"
 	"math"
 	"time"
 )

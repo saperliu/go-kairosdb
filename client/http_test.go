@@ -2,7 +2,7 @@ package client
 
 import (
 	"fmt"
-	"go-kairosdb/builder"
+	"github.com/saperliu/go-kairosdb/builder"
 	"strconv"
 	"strings"
 	"testing"

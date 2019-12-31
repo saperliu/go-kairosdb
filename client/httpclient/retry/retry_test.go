@@ -2,8 +2,8 @@ package retry
 
 import (
 	"github.com/pkg/errors"
-	"go-kairosdb/client/httpclient/backoff"
-	"go-kairosdb/client/xtime"
+	"github.com/saperliu/go-kairosdb/client/httpclient/backoff"
+	"github.com/saperliu/go-kairosdb/client/xtime"
 	"testing"
 	"time"
 )
