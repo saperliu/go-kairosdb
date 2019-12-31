@@ -15,14 +15,16 @@
 package client
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
+	"go-kairosdb/builder"
+	"go-kairosdb/client/httpclient"
+	"go-kairosdb/client/xtime"
+	"go-kairosdb/response"
+	"golang.org/x/net/context"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/saperliu/go-kairosdb/builder"
-	"github.com/saperliu/go-kairosdb/response"
+	"time"
 )
 
 var (
@@ -41,11 +43,36 @@ var (
 // This is the type that implements the Client interface.
 type httpClient struct {
 	serverAddress string
+	Client        *httpclient.HttpClient
+}
+
+func (hc *httpClient) NewClient(serverAddress string) Client {
+	cfg := &httpclient.Config{
+		Dial:            xtime.Duration(time.Second),
+		Timeout:         xtime.Duration(time.Second),
+		KeepAlive:       xtime.Duration(time.Second),
+		BackoffInterval: xtime.Duration(time.Second),
+		RetryCount:      3,
+	}
+	hc.Client = httpclient.NewHTTPClient(cfg)
+	return &httpClient{
+		serverAddress: serverAddress,
+		Client:        hc.Client,
+	}
 }
 
 func NewHttpClient(serverAddress string) Client {
+	cfg := &httpclient.Config{
+		Dial:            xtime.Duration(time.Second),
+		Timeout:         xtime.Duration(time.Second),
+		KeepAlive:       xtime.Duration(time.Second),
+		BackoffInterval: xtime.Duration(time.Second),
+		RetryCount:      3,
+	}
+	client := httpclient.NewHTTPClient(cfg)
 	return &httpClient{
 		serverAddress: serverAddress,
+		Client:        client,
 	}
 }
 
@@ -113,14 +140,18 @@ func (hc *httpClient) HealthCheck() (*response.Response, error) {
 }
 
 func (hc *httpClient) sendRequest(url, method string) (*http.Response, error) {
-	req, err := http.NewRequest(method, url, nil)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Add("accept", "application/json")
-	cli := &http.Client{}
-
-	return cli.Do(req)
+	//req, err := http.NewRequest(method, url, nil)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//req.Header.Add("accept", "application/json")
+	//cli := &http.Client{}
+	//
+	//return cli.Do(req)
+	headers := make(http.Header)
+	headers.Set("accept", "application/json")
+	headers.Set("Content-Type", "application/json")
+	return hc.Client.Get(context.Background(), url, headers)
 }
 
 func (hc *httpClient) httpRespToResponse(httpResp *http.Response) (*response.Response, error) {
@@ -136,7 +167,8 @@ func (hc *httpClient) httpRespToResponse(httpResp *http.Response) (*response.Res
 			return nil, err
 		} else {
 			// Unmarshal the contents into Response object.
-			fmt.Printf(" kairosdb  response : %v " ,contents)
+			fmt.Printf(" kairosdb  response : %v ", contents)
+			//logs.Info("-----contents  -------   %v  ",string(contents))
 			err = json.Unmarshal(contents, resp)
 			if err != nil {
 				return nil, err
@@ -189,20 +221,32 @@ func (hc *httpClient) get(url string) (*response.GetResponse, error) {
 }
 
 func (hc *httpClient) postData(url string, data []byte) (*response.Response, error) {
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(data))
+	//resp, err := http.Post(url, "application/json", bytes.NewBuffer(data))
+	//if err != nil {
+	//	return nil, err
+	//}
+	//fmt.Printf("-----postData  finish ------- %v    %v    %v  ", url, err, resp)
+	//return hc.httpRespToResponse(resp)
+	resp, err := hc.Client.Post(context.Background(), url, "application/json", nil, data)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("-----postData  finish ------- %v    %v    %v  ",url , err, resp)
+	fmt.Printf("-----postData  finish ------- %v    %v    %v  ", url, err, resp)
 	return hc.httpRespToResponse(resp)
 }
 
 func (hc *httpClient) postQuery(url string, data []byte) (*response.QueryResponse, error) {
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(data))
+	//resp, err := http.Post(url, "application/json", bytes.NewBuffer(data))
+	//if err != nil {
+	//	return nil, err
+	//}
+	headers := make(http.Header)
+	headers.Set("accept", "application/json")
+	headers.Set("Content-Type", "application/json")
+	resp, err := hc.Client.Post(context.Background(), url, "application/json", headers, data)
 	if err != nil {
 		return nil, err
 	}
-
 	return hc.httpRespToQueryResponse(resp)
 }
 
